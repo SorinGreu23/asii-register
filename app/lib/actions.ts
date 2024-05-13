@@ -81,4 +81,7 @@ export async function updateAnswers(formData: FormData) {
   await sql`UPDATE users SET general_answers = ${answersJson}::jsonb WHERE id = ${parsedData.userId}`;
 
   redirect(`/choose-department?userId=${parsedData.userId}`);
+  //aici trebuie redirect in functie de intrebarile de departament
+  //daca e GEN, redirect la choosedep
+  //altfel, redirect la felicitari
 }
