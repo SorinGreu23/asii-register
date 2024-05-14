@@ -19,12 +19,14 @@ export default async function Dashboard() {
                 title={user.firstname}
                 Icon={UserIcon}
                 content={user.department}
+                link={`/dashboard/users/${user.id}/view`}
               />
             ))}
           </div>
         </div>
         <div className="px-20 pt-10">
-          <h1 className="text-3xl font-bold pb-3">Quick Actions</h1>
+          <h1 className="text-3xl font-bold">Quick Actions</h1>
+          <p className="font-semibold italic text-gray-500 mb-3">Coming soon</p>
           <p>Add new member</p>
           <p>Add questions</p>
         </div>

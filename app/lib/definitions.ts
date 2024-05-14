@@ -7,8 +7,9 @@ export type User = {
   city: string;
   county: string;
   facultyname: string;
-  answers?: string[];
-  department?: string;
+  department_answers: string[];
+  general_answers: string
+  department: string;
 };
 
 export type Question = {

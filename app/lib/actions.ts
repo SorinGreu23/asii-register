@@ -64,9 +64,9 @@ export async function updateUserDepartment(formData: FormData) {
   redirect(`/questions?userId=${userId}&department=${department}`)
 }
 
-export async function updateAnswers(formData: FormData) {
+export async function updateGeneralAnswers(formData: FormData) {
   const answers = Array.from(formData.entries()).reduce((acc: string[], [key, value]) => {
-    if (key.startsWith('answer-')) {
+    if (key.startsWith('response-')) {
       acc.push(value.toString()); // Collect answers as an array of strings
     }
     return acc;
@@ -78,10 +78,28 @@ export async function updateAnswers(formData: FormData) {
   });
 
   const answersJson = JSON.stringify(parsedData.answers);
-  await sql`UPDATE users SET general_answers = ${answersJson}::jsonb WHERE id = ${parsedData.userId}`;
+  console.log("Answers go here: " + answersJson);
+  await sql`UPDATE users SET general_answers=${answersJson} WHERE id = ${parsedData.userId}`;
 
   redirect(`/choose-department?userId=${parsedData.userId}`);
-  //aici trebuie redirect in functie de intrebarile de departament
-  //daca e GEN, redirect la choosedep
-  //altfel, redirect la felicitari
+}
+
+export async function updateDepartmentAnswers(formData: FormData) {
+  const answers = Array.from(formData.entries()).reduce((acc: string[], [key, value]) => {
+    if (key.startsWith('response-')) {
+      acc.push(value.toString()); 
+    }
+    return acc;
+  }, []);
+
+  const parsedData = UpdateAnswersSchema.parse({
+    userId: formData.get('userId'),
+    answers
+  });
+
+  const answersJson = JSON.stringify(parsedData.answers);
+  console.log("Answers go here: " + answersJson);
+  await sql`UPDATE users SET department_answers=${answersJson} WHERE id = ${parsedData.userId}`;
+
+  redirect(`/finish`);
 }

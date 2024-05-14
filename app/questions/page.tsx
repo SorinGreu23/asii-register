@@ -6,19 +6,20 @@ import { useSearchParams } from "next/navigation";
 import { fetchDepartmentQuestions, fetchGeneralQuestions } from "../lib/data";
 import { ArrowCircleRightIcon } from "@heroicons/react/outline";
 import { Question } from "../lib/definitions";
-import { updateAnswers } from "../lib/actions";
+import { updateDepartmentAnswers, updateGeneralAnswers } from "../lib/actions";
 
 export default function QuestionsPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const searchParams = useSearchParams();
   const userId = searchParams?.get("userId");
   const questionType = searchParams?.get("department");
+  const isDepartment = questionType === "Gen" ? false : true;
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const fetchedQuestions = questionType === "Gen"
-        ? await fetchGeneralQuestions()
-        : await fetchDepartmentQuestions(questionType!);
+      const fetchedQuestions = questionType !== "Gen"
+        ? await fetchDepartmentQuestions(questionType!)
+        : await fetchGeneralQuestions();
 
       setQuestions(fetchedQuestions);
     };
@@ -39,7 +40,7 @@ export default function QuestionsPage() {
         <h1 className="text-4xl font-bold mb-4 uppercase">
           Întrebări {questionType === "Gen" ? "Generale" : `- ${questionType}`}
         </h1>
-        <form className="w-full max-w-lg space-y-6" action={updateAnswers}>
+        <form className="w-full max-w-lg space-y-6" action={isDepartment ? updateDepartmentAnswers : updateGeneralAnswers}>
           {questions.map((question) => (
             <div key={question.id}>
               <h2>{question.question}</h2>
@@ -54,7 +55,7 @@ export default function QuestionsPage() {
               />
             </div>
           ))}
-          <input type="hidden" name="userId" value={userId!}/>
+          <input type="hidden" name="userId" value={userId!} />
           <div className="w-100 flex items-center justify-center">
             <button
               type="submit"
